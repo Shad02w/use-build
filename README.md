@@ -55,12 +55,12 @@ npm install -D vite-plugin-use-build
 ```tsx
 // vite.config.ts
 import { defineConfig } from "vite"
-import { buildTime } from "vite-plugin-build-time"
+import { buildTimePlugin } from "vite-plugin-use-build"
 import react from "@vitejs/plugin-react"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react(), buildTime()]
+    plugins: [react(), buildTimePlugin()]
 })
 ```
 
