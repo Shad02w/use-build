@@ -1,6 +1,9 @@
 {
     "name": "vite-plugin-build-time",
     "type": "module",
+    "files": [
+        "dist"
+    ],
     "exports": {
         ".": {
             "import": "./dist/index.js",
@@ -9,7 +12,8 @@
     },
     "scripts": {
         "build": "tsup-node ./src/index.ts --dts --format esm,cjs --out-dir ./dist",
-        "dev": "tsup-node ./src/index.ts --watch --dts --format esm,cjs --out-dir ./dist"
+        "dev": "tsup-node ./src/index.ts --watch --dts --format esm,cjs --out-dir ./dist",
+        "prepublish": "pnpm run build"
     },
     "dependencies": {
         "@swc/core": "^1.4.11"
