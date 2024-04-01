@@ -1,9 +1,10 @@
 import { createLogger, createViteRuntime, createServer as createViteServer, type Plugin, ViteDevServer, UserConfig } from "vite"
+import packageJSON from "../package.json"
 
-const name = "vite-plugin-build-time"
+const name = packageJSON.name
 
-export function buildTime(): Plugin {
-    const logger = createLogger("info", { prefix: "[build-time]" })
+export function buildTimePlugin(): Plugin {
+    const logger = createLogger("info", { prefix: "[use-build]" })
     let userConfig: UserConfig
     let server: ViteDevServer
 

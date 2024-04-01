@@ -1,6 +1,7 @@
 {
-    "name": "vite-plugin-build-time",
+    "name": "vite-plugin-use-build",
     "version": "0.0.1",
+    "description": "A vite plugin run script at build time and import at runtime",
     "type": "module",
     "files": [
         "dist"
