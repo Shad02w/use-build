@@ -2,7 +2,7 @@
 
 This vite plugin help you to evaluate export values of esm module at build time, also allow you to import the values at runtime 
 
-## Usages
+## Usage
 
 use `use build` directive to declare a build time file, in following code snippet, `fetchMessage` and zod schema validation is done at build time
 
@@ -66,10 +66,24 @@ export default defineConfig({
 
 ## Caveat
 
-**All export value from build time file must be serializable.**
+**All export values from build time file must be serializable.**
+
+## Todo
+
+- [ ] HMR
+
+- [ ] Tests
+
+- [ ] add support for `.build.{ts,tsx,js,jsx}` files
+
+- [ ] allow other plugins to run at vite runtime
 
 ## Inspirations
 
 [GitHub - t3-oss/t3-env](https://github.com/t3-oss/t3-env)
 
 [GitHub - egoist/vite-plugin-compile-time: Some compile-time magic for your Vite project](https://github.com/egoist/vite-plugin-compile-time)
+
+## License
+
+[MIT](LICENSE).
