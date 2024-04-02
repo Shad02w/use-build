@@ -1,6 +1,6 @@
 # vite-plugin-use-build
 
-This vite plugin help you javascript file run only at build time and share the export value at runtime 
+This vite plugin help you to evaluate export values of esm module at build time, also allow you to import the values at runtime 
 
 ## Usages
 
