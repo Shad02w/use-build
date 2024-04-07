@@ -34,10 +34,17 @@ export function buildTimePlugin(): Plugin {
 
             const start = Date.now()
             logger.info(`Running build time script: ${id}`, { timestamp: true })
-            const modules = await runtime.executeEntrypoint(id)
-            logger.info(`Done in ${Date.now() - start}ms`, { timestamp: true })
 
-            return serializeModules(modules, id)
+            try {
+                const modules = await runtime.executeEntrypoint(id)
+                logger.info(`Done in ${Date.now() - start}ms`, { timestamp: true })
+                return serializeModules(modules, id)
+            } catch (e) {
+                if (e instanceof Error) {
+                    throw new Error(`Failed to run build time script: ${id} \n${e.message}\n${e.stack}`)
+                }
+                throw new Error(`Unknown execution error: ${e}`)
+            }
         },
         async buildEnd() {
             await server.close()
