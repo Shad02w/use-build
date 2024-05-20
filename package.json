@@ -1,5 +1,5 @@
 {
-    "name": "vite-plugin-use-build",
+    "name": "use-build",
     "version": "0.0.5",
     "description": "A vite plugin run script at build time and import at runtime",
     "homepage": "https://github.com/Shad02w/vite-plugin-use-build",
@@ -18,20 +18,32 @@
         "README.md"
     ],
     "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
+        "./vite": {
+            "import": "./dist/vite.js",
+            "require": "./dist/vite.cjs"
+        },
+        "./rsbuild": {
+            "import": "./dist/rsbuild.js",
+            "require": "./dist/rsbuild.cjs"
+        },
+        "./loader": {
+            "import": "./dist/rspack/loader.js",
+            "require": "./dist/rspack/loader.cjs"
         }
     },
     "scripts": {
-        "build": "tsup-node ./src/index.ts --dts --format esm,cjs --out-dir ./dist",
-        "dev": "tsup-node ./src/index.ts --watch --dts --format esm,cjs --out-dir ./dist",
+        "dev": "tsup --watch",
+        "build": "tsup",
         "prepublish": "pnpm run build"
     },
     "dependencies": {
-        "@swc/core": "^1.4.11"
+        "@swc/core": "^1.4.11",
+        "memfs": "^4.9.1",
+        "picocolors": "^1.0.1"
     },
     "devDependencies": {
+        "@rsbuild/core": "^0.6.4",
+        "@rspack/core": "^0.6.2",
         "@types/node": "^20.12.2",
         "prettier": "^3.2.5",
         "tsup": "^8.0.2",
@@ -40,6 +52,11 @@
     },
     "peerDependencies": {
         "vite": ">=5.1.0"
+    },
+    "peerDependenciesMeta": {
+        "vite": {
+            "optional": true
+        }
     },
     "license": "MIT"
 }

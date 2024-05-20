@@ -2,23 +2,26 @@
     "compilerOptions": {
         "checkJs": true,
         "useDefineForClassFields": true,
-        "module": "CommonJS",
+        "module": "ES2020",
         "target": "es5",
+        "downlevelIteration": true,
+        "moduleResolution": "Bundler",
 
         /* Import & Export */
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "isolatedModules": true,
-        "resolveJsonModule": true,
 
         /* Linting */
         "strict": true,
         "noImplicitOverride": true,
         "noImplicitAny": true,
+        "verbatimModuleSyntax": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "strictPropertyInitialization": true
-    }
+    },
+    "include": ["src"]
 }
