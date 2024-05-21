@@ -62,6 +62,51 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
     }
 }
 
+function pluginUseBuildRuntime({
+    entry,
+    output
+}: {
+    entry: string
+    output: {
+        dist: string
+        filename: string
+    }
+}): RsbuildPlugin {
+    return {
+        name: PLUGIN_NAME + "-runtime",
+        setup: async api => {
+            api.modifyRsbuildConfig({
+                handler: config => {
+                    config.output!.targets = ["node"]
+                    config.source!.entry = {
+                        bundle: entry
+                    }
+                    config.performance!.chunkSplit!.strategy = "all-in-one"
+                    config.output!.distPath!.root = output.dist
+                    config.output!.cleanDistPath = true
+                },
+                order: "post"
+            })
+
+            api.modifyRspackConfig(config => {
+                config.stats = {
+                    preset: "errors-warnings",
+                    colors: true,
+                    timings: true
+                }
+
+                // TODO: disable RsdoctorRspackPlugin, should have better solution
+                config.plugins = config.plugins?.filter(p => p.name != "RsdoctorRspackPlugin")
+            })
+        },
+        remove: [
+            // TODO: file-size does not work with custom output file system of the compiler
+            "rsbuild:file-size",
+            "rsbuild:progress"
+        ]
+    }
+}
+
 async function runModule(id: string, code: string) {
     const context = createContext(id)
 
@@ -89,45 +134,5 @@ function createContext(id: string) {
         module: module,
         __dirname: path.dirname(id),
         __filename: id
-    }
-}
-
-function pluginUseBuildRuntime({
-    entry,
-    output
-}: {
-    entry: string
-    output: {
-        dist: string
-        filename: string
-    }
-}): RsbuildPlugin {
-    return {
-        name: PLUGIN_NAME + "-runtime",
-        setup: async api => {
-            api.modifyRsbuildConfig(config => {
-                config.output!.targets = ["node"]
-                config.source!.entry = {
-                    bundle: entry
-                }
-                config.performance!.chunkSplit!.strategy = "all-in-one"
-                config.output!.distPath!.root = output.dist
-                config.output!.filename!.js = output.filename
-                config.output!.cleanDistPath = true
-            })
-
-            api.modifyRspackConfig(config => {
-                config.stats = {
-                    preset: "errors-warnings",
-                    colors: true,
-                    timings: true
-                }
-            })
-        },
-        remove: [
-            // TODO: file-size does not work with custom output file system of the compiler
-            "rsbuild:file-size",
-            "rsbuild:progress"
-        ]
     }
 }
