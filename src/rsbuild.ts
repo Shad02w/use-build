@@ -6,7 +6,6 @@ import { isBuildTimeFile, serializeModules } from "./util"
 
 const PLUGIN_NAME = "use-build"
 const BUNDLE_FILENAME = "bundle.js"
-const RUNTIME_DIST = "/dist"
 
 logger.override({
     ready: () => {},
