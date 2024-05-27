@@ -29,6 +29,7 @@ export function pluginUseBuild(): RsbuildPlugin {
 
 async function buildModules(entry: string, userConfig: RsbuildConfig) {
     const rsbuild = await createRsbuild({ rsbuildConfig: userConfig })
+    let outputPath
     rsbuild.addPlugins([
         pluginUseBuildRuntime({
             entry,
@@ -36,7 +37,18 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
                 dist: RUNTIME_DIST,
                 filename: BUNDLE_FILENAME
             }
-        })
+        }),
+        {
+            name: "get-stats-plugin",
+            setup: api => {
+                api.onAfterBuild(({ stats }) => {
+                    if (!stats) {
+                        throw new Error("Stats not found")
+                    }
+                    outputPath = stats.toJson().outputPath
+                })
+            }
+        }
     ])
 
     const compiler = await rsbuild.createCompiler()
@@ -47,7 +59,11 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
 
     await rsbuild.build({ compiler })
 
-    const bundle = await fs.promises.readFile(path.join(RUNTIME_DIST, "server", BUNDLE_FILENAME))
+    if (!outputPath) {
+        throw new Error("Output path not found")
+    }
+
+    const bundle = await fs.promises.readFile(path.join(outputPath, BUNDLE_FILENAME))
 
     try {
         const module = await runModule(entry, bundle.toString())
@@ -76,14 +92,22 @@ function pluginUseBuildRuntime({
         name: PLUGIN_NAME + "-runtime",
         setup: async api => {
             api.modifyRsbuildConfig({
-                handler: config => {
-                    config.output!.targets = ["node"]
-                    config.source!.entry = {
-                        bundle: entry
-                    }
-                    config.performance!.chunkSplit!.strategy = "all-in-one"
-                    config.output!.distPath!.root = output.dist
-                    config.output!.cleanDistPath = true
+                handler: (config, { mergeRsbuildConfig }) => {
+                    return mergeRsbuildConfig(config, {
+                        source: {
+                            entry: {
+                                bundle: entry
+                            }
+                        },
+                        output: {
+                            targets: ["node"]
+                        },
+                        performance: {
+                            chunkSplit: {
+                                strategy: "all-in-one"
+                            }
+                        }
+                    })
                 },
                 order: "post"
             })
