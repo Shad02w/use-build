@@ -32,11 +32,7 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
     let outputPath
     rsbuild.addPlugins([
         pluginUseBuildRuntime({
-            entry,
-            output: {
-                dist: RUNTIME_DIST,
-                filename: BUNDLE_FILENAME
-            }
+            entry
         }),
         {
             name: "get-stats-plugin",
@@ -78,16 +74,7 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
     }
 }
 
-function pluginUseBuildRuntime({
-    entry,
-    output
-}: {
-    entry: string
-    output: {
-        dist: string
-        filename: string
-    }
-}): RsbuildPlugin {
+function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
     return {
         name: PLUGIN_NAME + "-runtime",
         setup: async api => {
