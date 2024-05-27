@@ -3,7 +3,7 @@ import { isBuildTimeFile, serializeModules } from "./util"
 
 const name = "use-build"
 
-export function buildTimePlugin(): Plugin {
+export function UseBuildPlugin(): Plugin {
     const logger = createLogger("info", { prefix: `[${name}]` })
     let userConfig: UserConfig
     let server: ViteDevServer
