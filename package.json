@@ -42,8 +42,8 @@
         "picocolors": "^1.0.1"
     },
     "devDependencies": {
-        "@rsbuild/core": "^0.6.4",
-        "@rspack/core": "^0.6.2",
+        "@rsbuild/core": "^0.6.15",
+        "@rspack/core": "^0.6.5",
         "@types/node": "^20.12.2",
         "prettier": "^3.2.5",
         "tsup": "^8.0.2",
@@ -51,7 +51,9 @@
         "vite": "^5.2.7"
     },
     "peerDependencies": {
-        "vite": ">=5.1.0"
+        "vite": ">=5.1.0",
+        "@rsbuild/core": ">=0.6.4",
+        "@rspack/core": ">=0.6.2"
     },
     "peerDependenciesMeta": {
         "vite": {
