@@ -88,6 +88,10 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                         output: {
                             targets: ["node"]
                         },
+                        server: {
+                            // public dir copy do not support memfs
+                            publicDir: false
+                        },
                         performance: {
                             chunkSplit: {
                                 strategy: "all-in-one"
