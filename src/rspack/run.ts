@@ -1,12 +1,8 @@
 import { createRequire } from "node:module"
 import vm from "node:vm"
-import fs from "node:fs"
 import path from "node:path"
 
 export async function runModule(id: string, code: string) {
-    const fd = await fs.promises.open(process.cwd() + "/math.js", "w+")
-    await fd.writeFile(code)
-
     const context = createContext(id)
 
     // copy from vite-node repo
