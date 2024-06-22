@@ -12,7 +12,7 @@ export default defineConfig({
         path.join(dirname, "./src/rspack/index.ts")
     ],
     skipNodeModulesBundle: true,
-    external: ["vite", "@rsbuild/core", "@rspack/core"],
+    external: ["vite", "@rsbuild/core", "@rspack/core", "express"],
     dts: true,
     outDir: path.join(__dirname, "./dist"),
     format: ["cjs", "esm"]

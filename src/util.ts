@@ -35,3 +35,8 @@ export function serializeModules(modules: Record<string, unknown>, filepath: str
     }
     return content
 }
+
+export async function createMemFs() {
+    const { createFsFromVolume, Volume } = await import("memfs")
+    return createFsFromVolume(new Volume()) as any
+}

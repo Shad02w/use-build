@@ -86,11 +86,15 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                             }
                         },
                         output: {
-                            targets: ["node"]
+                            targets: ["node"],
+                            distPath: {
+                                root: "dist/.virtual-ubr"
+                            }
                         },
                         server: {
-                            // public dir copy do not support memfs
-                            publicDir: false
+                            publicDir: {
+                                name: ".virtual-use-build-runtime"
+                            }
                         },
                         performance: {
                             chunkSplit: {
