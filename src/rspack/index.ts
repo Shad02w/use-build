@@ -7,7 +7,6 @@ export class UseBuildPlugin implements RspackPluginInstance {
     apply(compiler: Compiler) {
         compiler.hooks.environment.tap(PLUGIN_NAME, () => {
             const runtimeOptions = { ...compiler.options }
-            console.log(runtimeOptions)
             compiler.options.module.rules.unshift({
                 test: /\.(j|t)sx?$/,
                 loader: "use-build/loader",
