@@ -73,7 +73,6 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
     }
 
     #clear() {
-        console.log(this.#tempDir)
         return fs.rmSync(this.#tempDir, { recursive: true })
     }
 
