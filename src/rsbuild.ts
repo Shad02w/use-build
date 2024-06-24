@@ -7,6 +7,8 @@ import { isBuildTimeFile, serializeModules } from "./util"
 const PLUGIN_NAME = "use-build"
 const BUNDLE_FILENAME = "bundle.js"
 
+export { pluginUseBuildV2 } from "./rsbuildv2"
+
 logger.override({
     ready: () => {},
     info: () => {}
