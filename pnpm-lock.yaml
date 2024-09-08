@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@rspack/core':
+        specifier: '>=1.0.0'
+        version: 1.0.3(@swc/helpers@0.5.13)
       '@swc/core':
         specifier: 1.7.24
         version: 1.7.24(@swc/helpers@0.5.13)
@@ -21,9 +24,6 @@ importers:
       '@rsbuild/core':
         specifier: 1.0.1-rc.5
         version: 1.0.1-rc.5
-      '@rspack/core':
-        specifier: 1.0.3
-        version: 1.0.3(@swc/helpers@0.5.13)
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21

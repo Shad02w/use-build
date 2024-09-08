@@ -1,10 +1,10 @@
 import { createRsbuild, logger, mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
 import { convertToNodeRsbuildConfig, generateEntryVirtualModule, generateHandlerVirtualModule, getDevMiddleware } from "./util"
 import path from "node:path"
-import { runModule } from "../rspack/run"
 import { serializeModules } from "../util"
-import { Compiler, Stats } from "@rspack/core"
 import { RspackVirtualModulePlugin } from "./virtual-module"
+import { runModule } from "./run-module"
+import type { Compiler, Stats } from "@rspack/core"
 
 type FS = typeof import("fs")
 

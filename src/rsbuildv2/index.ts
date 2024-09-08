@@ -8,9 +8,9 @@ import { filterPlugins, generateNotifierVirtualModule } from "./util"
 const USE_BUILD_NOTIFIER = "use-build-notifier"
 
 export { omit } from "./omit"
-export const PLUGIN_NAME = "plugin-use-build-v2"
+export const PLUGIN_NAME = "plugin-use-build"
 
-export function pluginUseBuildV2(): RsbuildPlugin {
+export function pluginUseBuild(): RsbuildPlugin {
     let server: RuntimeServer | null = null
     let vmp: RspackVirtualModulePlugin
 
