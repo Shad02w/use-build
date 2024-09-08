@@ -1,6 +1,6 @@
 {
     "name": "use-build",
-    "version": "0.0.7",
+    "version": "0.1.0",
     "description": "A vite plugin run script at build time and import at runtime",
     "homepage": "https://github.com/Shad02w/vite-plugin-use-build",
     "repository": {
@@ -56,8 +56,8 @@
         "vite": "5.4.3"
     },
     "peerDependencies": {
-        "@rsbuild/core": ">=0.6.4",
-        "@rspack/core": ">=0.6.2",
+        "@rsbuild/core": ">=1.0.0",
+        "@rspack/core": ">=1.0.0",
         "vite": ">=5.1.0"
     },
     "peerDependenciesMeta": {
