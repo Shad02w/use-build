@@ -5,6 +5,7 @@ import { isBuildTimeFile } from "../util"
 import { RspackVirtualModulePlugin } from "./virtual-module"
 import { generateNotifierVirtualModule } from "./util"
 
+export const PLUGIN_NAME = "plugin-use-build-v2"
 const USE_BUILD_NOTIFIER = "use-build-notifier"
 
 export function pluginUseBuildV2(): RsbuildPlugin {
@@ -12,7 +13,7 @@ export function pluginUseBuildV2(): RsbuildPlugin {
     let vmp: RspackVirtualModulePlugin
 
     return {
-        name: "plugin-use-build-v2",
+        name: PLUGIN_NAME,
         setup(api) {
             api.modifyBundlerChain(chain => {
                 vmp = new RspackVirtualModulePlugin({
@@ -22,11 +23,20 @@ export function pluginUseBuildV2(): RsbuildPlugin {
             })
 
             api.onAfterCreateCompiler(async () => {
-                const userConfig = api.getRsbuildConfig()
+                let userConfig = api.getRsbuildConfig()
+                userConfig = {
+                    ...userConfig,
+                    plugins: userConfig.plugins?.filter(p => {
+                        if (typeof p === "object" && p !== null && "name" in p) {
+                            return p.name === PLUGIN_NAME ? false : true
+                        }
+                        return true
+                    })
+                }
                 const fileSet = await prepare(userConfig)
 
                 server = await createUseBuildServer({
-                    userConfig,
+                    userConfig: userConfig,
                     fileSet,
                     onRebuild() {
                         vmp.writeModule(USE_BUILD_NOTIFIER, generateNotifierVirtualModule(new Date()))

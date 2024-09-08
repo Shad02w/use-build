@@ -71,7 +71,7 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
         })
     })
 
-    rsbuild.removePlugins(["rsbuild:progress"])
+    rsbuild.removePlugins(["rsbuild:progress", "rsbuild:file-size"])
 
     const compiler = (await rsbuild.createCompiler()) as Compiler
     const server = await rsbuild.createDevServer({ compiler, getPortSilently: true })

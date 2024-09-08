@@ -1,5 +1,6 @@
 import { createRsbuild, type RsbuildConfig, type RsbuildPlugin } from "@rsbuild/core"
 import { isBuildTimeFile } from "../util"
+import { convertToNodeRsbuildConfig } from "./util"
 
 export async function prepare(userConfig: RsbuildConfig) {
     const useBuildFileSet = new Set<string>()
@@ -24,25 +25,7 @@ function pluginUseBuildPrepare(fileSet: Set<string>): RsbuildPlugin {
         name: "plugin-use-build-prepare",
         setup: api => {
             api.modifyRsbuildConfig({
-                handler: (config, { mergeRsbuildConfig }) =>
-                    mergeRsbuildConfig(config, {
-                        output: {
-                            overrideBrowserslist: [],
-                            targets: ["node"],
-                            emitAssets: () => false,
-                            polyfill: "off",
-                            minify: false,
-                            sourceMap: {
-                                js: false
-                            }
-                        },
-                        server: {
-                            publicDir: false
-                        },
-                        performance: {
-                            printFileSize: false
-                        }
-                    }),
+                handler: config => convertToNodeRsbuildConfig(config),
                 order: "post"
             })
             api.transform({ test: /\.(j|t)sx?$/ }, async ({ code, resourcePath }) => {
@@ -53,6 +36,6 @@ function pluginUseBuildPrepare(fileSet: Set<string>): RsbuildPlugin {
                 return code
             })
         },
-        remove: ["rsbuild:progress"]
+        remove: ["rsbuild:progress", "rsbuild:file-size"]
     }
 }
