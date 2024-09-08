@@ -3,10 +3,12 @@ import { prepare } from "./prepare"
 import { createUseBuildServer, type RuntimeServer } from "./server"
 import { isBuildTimeFile } from "../util"
 import { RspackVirtualModulePlugin } from "./virtual-module"
-import { generateNotifierVirtualModule } from "./util"
+import { filterPlugins, generateNotifierVirtualModule } from "./util"
 
-export const PLUGIN_NAME = "plugin-use-build-v2"
 const USE_BUILD_NOTIFIER = "use-build-notifier"
+
+export { omit } from "./omit"
+export const PLUGIN_NAME = "plugin-use-build-v2"
 
 export function pluginUseBuildV2(): RsbuildPlugin {
     let server: RuntimeServer | null = null
@@ -26,12 +28,7 @@ export function pluginUseBuildV2(): RsbuildPlugin {
                 let userConfig = api.getRsbuildConfig()
                 userConfig = {
                     ...userConfig,
-                    plugins: userConfig.plugins?.filter(p => {
-                        if (typeof p === "object" && p !== null && "name" in p) {
-                            return p.name === PLUGIN_NAME ? false : true
-                        }
-                        return true
-                    })
+                    plugins: filterPlugins(userConfig)
                 }
                 const fileSet = await prepare(userConfig)
 

@@ -1,6 +1,8 @@
 import { mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
-import type { ServerResponse } from "node:http"
 import { RspackVirtualModulePlugin } from "./virtual-module"
+import { PLUGIN_NAME } from "./index"
+import { isOmittedPlugin } from "./omit"
+import type { ServerResponse } from "node:http"
 
 export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
     return mergeRsbuildConfig(userConfig, {
@@ -22,6 +24,26 @@ export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
                 strategy: "all-in-one"
             }
         }
+    })
+}
+
+export function filterPlugins(config: RsbuildConfig) {
+    return config.plugins?.filter(p => {
+        if (!p) return false
+
+        if (isOmittedPlugin(p)) {
+            return false
+        }
+
+        if (typeof p === "object" && p !== null && "name" in p) {
+            return p.name === PLUGIN_NAME ||
+                // TODO: disable RsdoctorRspackPlugin, should have better solution
+                p.name === "RsdoctorRspackPlugin"
+                ? false
+                : true
+        }
+
+        return true
     })
 }
 
