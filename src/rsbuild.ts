@@ -3,6 +3,7 @@ import vm from "node:vm"
 import { createRequire } from "node:module"
 import path from "node:path"
 import { isBuildTimeFile, serializeModules } from "./util"
+import type { Stats } from "@rspack/core"
 
 const PLUGIN_NAME = "use-build"
 const BUNDLE_FILENAME = "bundle.js"
@@ -42,7 +43,7 @@ async function buildModules(entry: string, userConfig: RsbuildConfig) {
                     if (!stats) {
                         throw new Error("Stats not found")
                     }
-                    outputPath = stats.toJson().outputPath
+                    outputPath = (stats as Stats).toJson().outputPath
                 })
             }
         }
@@ -88,7 +89,7 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                             }
                         },
                         output: {
-                            targets: ["node"],
+                            target: "node",
                             distPath: {
                                 root: "dist/.virtual-ubr"
                             }
@@ -116,7 +117,8 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                 }
 
                 // TODO: disable RsdoctorRspackPlugin, should have better solution
-                config.plugins = config.plugins?.filter(p => p.name != "RsdoctorRspackPlugin")
+                console.log("plugins", config.plugins)
+                // config.plugins = config.plugins?.filter(p => p.name != "RsdoctorRspackPlugin")
             })
         },
         remove: [

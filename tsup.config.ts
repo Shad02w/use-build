@@ -9,7 +9,8 @@ export default defineConfig({
         path.join(dirname, "./src/vite.ts"),
         path.join(dirname, "./src/rsbuild.ts"),
         path.join(dirname, "./src/rspack/loader.ts"),
-        path.join(dirname, "./src/rspack/index.ts")
+        path.join(dirname, "./src/rspack/index.ts"),
+        path.join(dirname, "./src/rsbuildv2/index.ts")
     ],
     skipNodeModulesBundle: true,
     external: ["vite", "@rsbuild/core", "@rspack/core", "express"],

@@ -69,7 +69,7 @@ function throwCompilerErrors(stats: Stats): never {
     let messages: string[] = []
     for (const err of stats.compilation.errors) {
         if (err) {
-            messages.push(err?.formatted)
+            messages.push(err?.message)
         }
     }
 
