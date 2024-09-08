@@ -103,7 +103,17 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                             chunkSplit: {
                                 strategy: "all-in-one"
                             }
-                        }
+                        },
+                        plugins: config.plugins?.filter(p => {
+                            if (typeof p === "object" && p !== null && "name" in p) {
+                                return p.name === PLUGIN_NAME ||
+                                    // TODO: disable RsdoctorRspackPlugin, should have better solution
+                                    p.name === "RsdoctorRspackPlugin"
+                                    ? false
+                                    : true
+                            }
+                            return true
+                        })
                     })
                 },
                 order: "post"
@@ -115,10 +125,6 @@ function pluginUseBuildRuntime({ entry }: { entry: string }): RsbuildPlugin {
                     colors: true,
                     timings: true
                 }
-
-                // TODO: disable RsdoctorRspackPlugin, should have better solution
-                console.log("plugins", config.plugins)
-                // config.plugins = config.plugins?.filter(p => p.name != "RsdoctorRspackPlugin")
             })
         },
         remove: [

@@ -1,7 +1,6 @@
 import { mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
 import type { ServerResponse } from "node:http"
 import { RspackVirtualModulePlugin } from "./virtual-module"
-import { PLUGIN_NAME } from "./index"
 
 export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
     return mergeRsbuildConfig(userConfig, {
