@@ -52,6 +52,7 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
                 {} as Record<string, string>
             )
         }
+
         process.on("SIGINT", this.#clear.bind(this))
         process.on("exit", this.#clear.bind(this))
     }
@@ -73,7 +74,11 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
     }
 
     #clear() {
-        return fs.rmSync(this.#tempDir, { recursive: true })
+        try {
+            fs.rmSync(this.#tempDir, { recursive: true })
+        } catch {
+            // noop
+        }
     }
 
     #normalizePath(p: string) {
