@@ -6,6 +6,9 @@ import type { RspackPluginInstance, Compiler } from "@rspack/core"
 import path from "node:path"
 import crypto from "node:crypto"
 import fs from "node:fs"
+import { logger } from "@rsbuild/core"
+
+const PLUGIN_NAME = "rspack-virtual-module"
 
 export class RspackVirtualModulePlugin implements RspackPluginInstance {
     #staticModules: Record<string, string>
@@ -13,6 +16,8 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
     #tempDir: string
 
     static BaseDirectory = path.join(process.cwd(), "node_modules", ".use-build-virtual-module")
+
+    static #allTempDirs: Set<string> = new Set()
 
     /**
      * Get the relative path of the virtual module fro a given file in the file system
@@ -33,6 +38,8 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
         if (!fs.existsSync(this.#tempDir)) {
             fs.mkdirSync(this.#tempDir)
         }
+
+        RspackVirtualModulePlugin.#allTempDirs.add(this.#tempDir)
     }
 
     apply(compiler: Compiler) {
@@ -53,8 +60,16 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
             )
         }
 
-        process.on("SIGINT", this.#clear.bind(this))
-        process.on("exit", this.#clear.bind(this))
+        // This event will trigger when dev server is manually stopped, rsbuild will not trigger shutdown hook in this case
+        process.on("SIGINT", () => {
+            this.#clear()
+            process.exit(0)
+        })
+
+        // This will trigger when build process is ending
+        compiler.hooks.shutdown.tap(PLUGIN_NAME, () => {
+            this.#clear()
+        })
     }
 
     async writeModule(modulePath: string, content: string) {
@@ -73,9 +88,15 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
         throw new Error(`Module ${modulePath} is not a virtual module`)
     }
 
+    /**
+     * Cleanup the temporary directory, because rspack use temp directory to store the virtual module
+     */
     #clear() {
         try {
-            fs.rmSync(this.#tempDir, { recursive: true })
+            logger.info("[use-build] cleaning up the temporary directory")
+            for (const tempDir of RspackVirtualModulePlugin.#allTempDirs) {
+                fs.rmSync(tempDir, { recursive: true, force: true })
+            }
         } catch {
             // noop
         }
