@@ -2,16 +2,18 @@
     "name": "use-build",
     "version": "0.0.7",
     "description": "A vite plugin run script at build time and import at runtime",
-    "homepage": "https://github.com/Shad02w/vite-plugin-use-build",
+    "homepage": "https://github.com/Shad02w/use-build",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Shad02w/vite-plugin-use-build.git"
+        "url": "git+https://github.com/Shad02w/use-build.git"
     },
     "type": "module",
     "keywords": [
         "vite",
         "plugin",
-        "build"
+        "rsbuild",
+        "build",
+        "use build"
     ],
     "files": [
         "dist",
@@ -38,8 +40,7 @@
     },
     "dependencies": {
         "@swc/core": "^1.4.11",
-        "memfs": "^4.9.3",
-        "picocolors": "^1.0.1"
+        "memfs": "^4.9.3"
     },
     "devDependencies": {
         "@rsbuild/core": "^0.6.15",

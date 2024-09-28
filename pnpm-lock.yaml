@@ -14,9 +14,6 @@ importers:
       memfs:
         specifier: ^4.9.3
         version: 4.9.3
-      picocolors:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@rsbuild/core':
         specifier: ^0.6.15
