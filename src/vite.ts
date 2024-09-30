@@ -39,7 +39,10 @@ export function UseBuildPlugin(): Plugin {
             try {
                 const modules = await runtime.executeEntrypoint(id)
                 logger.info(`Done in ${Date.now() - start}ms`, { timestamp: true })
-                return serializeModules(modules, id)
+                return {
+                    code: serializeModules(modules, id),
+                    map: { mappings: "" }
+                }
             } catch (e) {
                 if (e instanceof Error) {
                     throw new Error(`Failed to run build time script: ${id} \n${e.message}\n${e.stack}`)
