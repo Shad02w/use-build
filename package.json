@@ -1,6 +1,6 @@
 {
     "name": "use-build",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "A vite plugin run script at build time and import at runtime",
     "homepage": "https://github.com/Shad02w/use-build",
     "repository": {
