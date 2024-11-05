@@ -73,10 +73,15 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
 
     rsbuild.removePlugins(["rsbuild:progress", "rsbuild:file-size"])
 
-    const compiler = (await rsbuild.createCompiler()) as Compiler
+    const compiler = await rsbuild.createCompiler()
+
+    if ("compilers" in compiler) {
+        throw new Error("[use-build] use-build-runtime created a multi compiler, which is not supported")
+    }
+
     const server = await rsbuild.createDevServer({ compiler, getPortSilently: true })
 
-    compiler.hooks.afterEmit.tapPromise("use-build-runtime-runtime", async compilation => {
+    compiler.hooks.afterEmit.tapPromise("use-build-runtime", async compilation => {
         // omit the first build
         if (!handler) return
         handler = await createHandler(compilation.getStats())
@@ -124,11 +129,15 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
     })
 
     const {
-        port,
-        server: { close }
+        server: { close },
+        urls
     } = await server.listen()
 
-    logger.success(`[use-build] build-time server started at port ${port}\n`)
+    if (urls.length === 0) {
+        throw new Error("[use-build]: use-build-runtime server not started, urls is empty")
+    }
+
+    logger.success(`[use-build] build-time server started at ${urls[0]}`)
 
     const createHandler = async (stats: Stats) => {
         if (!outputFileSystem) {
@@ -150,7 +159,8 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
         }
         return handler
     }
-    const serverURL = `http://localhost:${port}`
+
+    const serverURL = urls[0]
 
     const waitForNextBuild = async () => {
         const wait = new Promise<Stats>(resolve => void (waitForNextBuildResolver = resolve))
