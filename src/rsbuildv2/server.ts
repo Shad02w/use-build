@@ -4,7 +4,7 @@ import path from "node:path"
 import { serializeModules } from "../util"
 import { RspackVirtualModulePlugin } from "./virtual-module"
 import { runModule } from "./run-module"
-import type { Compiler, Stats } from "@rspack/core"
+import type { Stats } from "@rspack/core"
 
 type FS = typeof import("fs")
 
