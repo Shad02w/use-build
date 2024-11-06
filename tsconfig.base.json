@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "checkJs": true,
+        "useDefineForClassFields": true,
+
+        /* Import & Export */
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+
+        /* Linting */
+        "strict": true,
+        "noImplicitOverride": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitAny": true,
+        "verbatimModuleSyntax": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "strictPropertyInitialization": true
+    }
+}
