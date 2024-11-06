@@ -171,18 +171,36 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
 
     return {
         close,
-        init: async () => await fetch(`${serverURL}/init`),
+        init: async () => {
+            try {
+                return await fetch(`${serverURL}/init`)
+            } catch (e) {
+                let message = "unknown error"
+                if (e instanceof Error) {
+                    message = e.message
+                }
+                throw new Error(`[use-build] init failed: ${message}`)
+            }
+        },
         request: async (resourcePath: string) => {
             const url = new URL(serverURL)
             url.pathname = "/handle"
             url.searchParams.set("path", resourcePath)
 
-            const response = await fetch(url)
-            if (!response.ok) {
-                throw new Error(`[use-build] Oops! failed to handle the request for ${resourcePath}`)
+            try {
+                const response = await fetch(url)
+                if (!response.ok) {
+                    throw new Error(`[use-build] Oops! failed to handle the request for ${resourcePath}`)
+                }
+                const modules = await response.json()
+                return serializeModules(modules, resourcePath)
+            } catch (e) {
+                let message = "unknown error"
+                if (e instanceof Error) {
+                    message = e.message
+                }
+                throw new Error(`[use-build] handle failed: ${message}`)
             }
-            const modules = await response.json()
-            return serializeModules(modules, resourcePath)
         }
     }
 }
