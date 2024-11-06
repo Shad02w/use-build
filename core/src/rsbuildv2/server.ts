@@ -1,5 +1,11 @@
 import { createRsbuild, logger, mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
-import { convertToNodeRsbuildConfig, generateEntryVirtualModule, generateHandlerVirtualModule, getDevMiddleware } from "./util"
+import {
+    convertToNodeRsbuildConfig,
+    generateEntryVirtualModule,
+    generateHandlerVirtualModule,
+    getDevMiddleware,
+    resolveAvailablePort
+} from "./util"
 import path from "node:path"
 import { serializeModules } from "../util"
 import { RspackVirtualModulePlugin } from "./virtual-module"
@@ -48,11 +54,14 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
     let waitForNextBuildResolver: ((stats: Stats) => void) | null = null
     const fileSet = options.fileSet
 
+    // using my own port discovery logic, because the rsbuild dont seem to check localhost when the host is 0.0.0.0
+    const port = await resolveAvailablePort("localhost", BUILD_TIME_SERVER_PORT)
+
     const rsbuild = await createRsbuild({
         rsbuildConfig: mergeRsbuildConfig(convertToNodeRsbuildConfig(options.userConfig), {
             source: {
                 entry: {
-                    index: generateEntryVirtualModule()
+                    index: generateEntryVirtualModule(USE_BUILD_RUNTIME)
                 }
             },
             tools: {
@@ -64,8 +73,7 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
                 }
             },
             server: {
-                port: BUILD_TIME_SERVER_PORT,
-                host: "localhost",
+                port,
                 printUrls: false
             }
         })
@@ -76,12 +84,12 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
     const compiler = await rsbuild.createCompiler()
 
     if ("compilers" in compiler) {
-        throw new Error("[use-build] use-build-runtime created a multi compiler, which is not supported")
+        throw new Error(`[use-build] ${USE_BUILD_RUNTIME} created a multi compiler, which is not supported`)
     }
 
     const server = await rsbuild.createDevServer({ compiler, getPortSilently: true })
 
-    compiler.hooks.afterEmit.tapPromise("use-build-runtime", async compilation => {
+    compiler.hooks.afterEmit.tapPromise(USE_BUILD_RUNTIME, async compilation => {
         // omit the first build
         if (!handler) return
         handler = await createHandler(compilation.getStats())
@@ -96,6 +104,7 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
 
         handler = await createHandler(devMiddleware.stats)
         res.end()
+        logger.success("[use-build] init handler")
     })
 
     server.middlewares.use("/handle", async (req, res) => {
@@ -134,10 +143,12 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
     } = await server.listen()
 
     if (urls.length === 0) {
-        throw new Error("[use-build]: use-build-runtime server not started, urls is empty")
+        throw new Error(`[use-build]: ${USE_BUILD_RUNTIME} server not started, urls is empty`)
     }
 
     logger.success(`[use-build] build-time server started at ${urls[0]}`)
+
+    const serverURL = urls[0]
 
     const createHandler = async (stats: Stats) => {
         if (!outputFileSystem) {
@@ -159,8 +170,6 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
         }
         return handler
     }
-
-    const serverURL = urls[0]
 
     const waitForNextBuild = async () => {
         const wait = new Promise<Stats>(resolve => void (waitForNextBuildResolver = resolve))

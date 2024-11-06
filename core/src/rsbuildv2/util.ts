@@ -1,4 +1,5 @@
 import { mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
+import { connect } from "node:net"
 import { RspackVirtualModulePlugin } from "./virtual-module"
 import { PLUGIN_NAME } from "./index"
 import { isOmittedPlugin } from "./omit"
@@ -47,8 +48,8 @@ export function filterPlugins(config: RsbuildConfig) {
     })
 }
 
-export function generateEntryVirtualModule() {
-    return 'data:text/javascript,import {handler} from "use-build-runtime"; export {handler};'
+export function generateEntryVirtualModule(moduleName: string) {
+    return `data:text/javascript,import {handler} from "${moduleName}"; export {handler};`
 }
 
 export function generateNotifierVirtualModule(date?: Date) {
@@ -74,4 +75,59 @@ export function getDevMiddleware(res: ServerResponse) {
         throw new Error("[use-build] devMiddleware not found, unable to handle use-build runtime request")
     }
     return locals.webpack.devMiddleware
+}
+
+const MAX_TRY_TIMES = 50
+export async function resolveAvailablePort(host: string, port: number) {
+    let tries = 0
+    let currentPort = port
+
+    while (tries < MAX_TRY_TIMES) {
+        try {
+            const available = await isPortAvailable(currentPort, host)
+            if (available) {
+                return currentPort
+            }
+            continue
+        } catch {
+            continue
+        } finally {
+            currentPort++
+            tries++
+        }
+    }
+}
+
+function isPortAvailable(port: number, host: string, timeout: number = 1000): Promise<boolean> {
+    return new Promise(resolve => {
+        const socket = connect({
+            port,
+            host,
+            timeout
+        })
+
+        // If we can connect, the port is in use
+        socket.once("connect", () => {
+            socket.end()
+            resolve(false)
+        })
+
+        // If connection fails, the port is available
+        socket.once("error", (err: NodeJS.ErrnoException) => {
+            socket.destroy()
+            // ECONNREFUSED means nothing is listening
+            if (err.code === "ECONNREFUSED") {
+                resolve(true)
+            } else {
+                // Other errors might mean the port is in use but not accepting connections
+                resolve(false)
+            }
+        })
+
+        // Handle timeout
+        socket.once("timeout", () => {
+            socket.destroy()
+            resolve(false)
+        })
+    })
 }
