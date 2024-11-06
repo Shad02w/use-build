@@ -199,7 +199,7 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
                 if (e instanceof Error) {
                     message = e.message
                 }
-                throw new Error(`[use-build] handle failed: ${message}`)
+                throw new Error(`[use-build] handle failed: ${message}\nresource path: ${resourcePath}\nurl: ${url.toString()}`)
             }
         }
     }
