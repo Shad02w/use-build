@@ -3,7 +3,7 @@ import { prepare } from "./prepare"
 import { createUseBuildServer, type RuntimeServer } from "./server"
 import { isBuildTimeFile } from "../util"
 import { RspackVirtualModulePlugin } from "./virtual-module"
-import { filterPlugins, generateNotifierVirtualModule } from "./util"
+import { convertToNodeRsbuildConfig, filterPlugins, generateNotifierVirtualModule } from "./util"
 
 const USE_BUILD_NOTIFIER = "use-build-notifier"
 
@@ -30,7 +30,7 @@ export function pluginUseBuild(): RsbuildPlugin {
                     ...userConfig,
                     plugins: filterPlugins(userConfig)
                 }
-                const fileSet = await prepare(userConfig)
+                const fileSet = await prepare(convertToNodeRsbuildConfig(userConfig))
 
                 server = await createUseBuildServer({
                     userConfig: userConfig,

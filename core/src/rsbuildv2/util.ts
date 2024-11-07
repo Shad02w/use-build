@@ -6,7 +6,10 @@ import { isOmittedPlugin } from "./omit"
 import type { ServerResponse } from "node:http"
 
 export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
-    return mergeRsbuildConfig(userConfig, {
+    const merged = mergeRsbuildConfig(userConfig, {
+        dev: {
+            writeToDisk: false
+        },
         output: {
             overrideBrowserslist: [],
             target: "node",
@@ -26,6 +29,12 @@ export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
             }
         }
     })
+
+    if (merged.performance?.bundleAnalyze) {
+        merged.performance.bundleAnalyze = undefined
+    }
+
+    return merged
 }
 
 export function filterPlugins(config: RsbuildConfig) {
