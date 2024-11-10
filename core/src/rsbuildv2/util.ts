@@ -33,6 +33,7 @@ export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
     if (merged.performance?.bundleAnalyze) {
         merged.performance.bundleAnalyze = undefined
     }
+    merged.plugins = []
 
     return merged
 }
