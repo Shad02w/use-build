@@ -1,7 +1,9 @@
 name: Test CI
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -24,6 +26,10 @@ jobs:
       - name: Build plugin
         run: pnpm --filter='use-build' build
 
-      - name: Test basic-react
+      - name: Test rsbuild
         working-directory: test/basic-react
+        run: pnpm build
+
+      - name: Test vite
+        working-directory: test/vite-6-react
         run: pnpm build
