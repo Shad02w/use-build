@@ -9,6 +9,6 @@ export default defineConfig({
     skipNodeModulesBundle: true,
     external: ["vite", "@rsbuild/core", "@rspack/core", "express"],
     dts: true,
-    outDir: path.join(__dirname, "./dist"),
+    outDir: path.join(dirname, "./dist"),
     format: ["cjs", "esm"]
 })
