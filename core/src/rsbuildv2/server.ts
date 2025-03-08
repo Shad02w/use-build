@@ -132,7 +132,7 @@ export async function createUseBuildServer(options: UseBuildServeOptions): Promi
             await waitForNextBuild()
         }
 
-        const relativePath = RspackVirtualModulePlugin.getRelativePath(resourcePath)
+        const relativePath = RspackVirtualModulePlugin.genereateImportPath(resourcePath)
         const result = await handler(relativePath)
         res.end(JSON.stringify(result))
     })

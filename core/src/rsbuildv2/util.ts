@@ -68,8 +68,12 @@ export function generateNotifierVirtualModule(date?: Date) {
 
 export function generateHandlerVirtualModule(useBuildFileSet: Set<string>) {
     const importPair = Array.from(useBuildFileSet)
-        .map(RspackVirtualModulePlugin.getRelativePath)
-        .map((path, index) => [`a${index}`, path])
+        .map(RspackVirtualModulePlugin.genereateImportPath)
+        .map((path, index) => [
+            `a${index}`,
+            // even on windows, we should still use linux path inside the js file
+            path
+        ])
 
     const importStatements = importPair.map(([variable, path]) => `import * as ${variable} from "${path}"`)
     const filepathToVariable = importPair.map(([variable, path]) => `"${path}":${variable}`)

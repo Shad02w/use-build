@@ -20,10 +20,10 @@ export class RspackVirtualModulePlugin implements RspackPluginInstance {
     static #allTempDirs: Set<string> = new Set()
 
     /**
-     * Get the relative path of the virtual module fro a given file in the file system
+     * Genereate a import path in the virtual module for a given resource path
      */
-    static getRelativePath(resourcePath: string) {
-        return path.relative(path.join(RspackVirtualModulePlugin.BaseDirectory, "hash"), resourcePath)
+    static genereateImportPath(resourcePath: string) {
+        return path.relative(path.join(RspackVirtualModulePlugin.BaseDirectory, "hash"), resourcePath).replace(/\\/g, "/")
     }
 
     constructor(staticModules: Record<string, string>) {
