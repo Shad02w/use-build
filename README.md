@@ -1,6 +1,6 @@
-# vite-plugin-use-build
+# use-build
 
-This vite plugin help you to evaluate export values of esm module at build time, also allow you to import the values at runtime 
+use-build is a bundler plugin help you to move logic and run it at build time
 
 ## Usage
 
@@ -13,7 +13,7 @@ use `use build` directive to declare a build time file, in following code snippe
 import { z } from "zod"
 import { envSchema } from "./env-schema"
 
-async function fetchMessage() {
+async function fetchMessage()
     console.log("should only run on build time")
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
     await delay(1000)
@@ -24,7 +24,7 @@ export const env = envSchema.parse(import.meta.env)
 
 export const message = z.string().parse(await fetchMessage())
 
-export default 123
+
 ```
 
 and you can use all export values by directly importing the build time file at runtime
@@ -64,19 +64,29 @@ export default defineConfig({
 })
 ```
 
+use-build currently supports: 
+
+- vite
+
+- rsbuild
+
+in development 🚧
+
+- rspack 
+
+- rolldown
+
 ## Caveat
 
 **All export values from build time file must be serializable.**
 
 ## Todo
 
-- [ ] HMR
+- [x] HMR
 
 - [ ] Tests
 
-- [ ] add support for `.build.{ts,tsx,js,jsx}` files
-
-- [ ] allow other plugins to run at vite runtime
+- [ ] typescript plugins
 
 ## Inspirations
 
