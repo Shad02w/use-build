@@ -1,4 +1,4 @@
-import { mergeRsbuildConfig, type RsbuildConfig } from "@rsbuild/core"
+import { mergeRsbuildConfig, type RsbuildConfig, type RsbuildPlugins } from "@rsbuild/core"
 import { connect } from "node:net"
 import { RspackVirtualModulePlugin } from "./virtual-module"
 import { PLUGIN_NAME } from "./index"
@@ -38,7 +38,7 @@ export function convertToNodeRsbuildConfig(userConfig: RsbuildConfig) {
     return merged
 }
 
-export function filterPlugins(config: RsbuildConfig) {
+export function filterPlugins(config: RsbuildConfig): RsbuildPlugins | undefined {
     return config.plugins?.filter(p => {
         if (!p) return false
 
