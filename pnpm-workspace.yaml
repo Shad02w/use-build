@@ -1,3 +1,5 @@
 packages:
-  - 'core'
-  - 'test/*'
+  - core
+  - test/*
+onlyBuiltDependencies:
+  - esbuild
