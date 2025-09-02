@@ -33,7 +33,8 @@
         "dev": "rslib build --watch",
         "build": "rslib build",
         "test": "cd ../test/basic-react && pnpm build && cd ../vite-6-react && pnpm build && cd ../vite-7-react && pnpm build",
-        "prepublish": "pnpm run build"
+        "prepublishOnly": "pnpm run build && node ../scripts/prepublish-core.mjs",
+        "postpublish": "node ../scripts/cleanup-core.mjs"
     },
     "dependencies": {
         "@swc/core": "1.13.5",
