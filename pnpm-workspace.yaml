@@ -1,5 +1,6 @@
 packages:
   - core
   - test/*
+  - e2e/*
 onlyBuiltDependencies:
   - esbuild
