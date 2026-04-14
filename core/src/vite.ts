@@ -20,7 +20,6 @@ export function UseBuildPlugin(): Plugin {
 
             if (!config.environments) {
                 config.environments = {}
-                config.environments.use_build ??= {}
             }
         },
         async buildStart() {
