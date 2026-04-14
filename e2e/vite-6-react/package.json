@@ -19,5 +19,10 @@
         "@vitejs/plugin-react": "4.4.0",
         "use-build": "workspace:*",
         "vite": "6.3.0"
+    },
+    "dependenciesMeta": {
+        "use-build": {
+            "injected": true
+        }
     }
 }

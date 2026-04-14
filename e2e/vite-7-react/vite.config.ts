@@ -5,5 +5,6 @@ import { UseBuildPlugin } from "use-build/vite"
 // https://vite.dev/config/
 export default defineConfig({
     environments: {},
+    // @ts-ignore
     plugins: [react(), UseBuildPlugin()]
 })
