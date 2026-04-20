@@ -1,4 +1,11 @@
-import { createServer as createViteServer, type Plugin, type ViteDevServer, type UserConfig, createLogger } from "vite"
+import {
+    createServer as createViteServer,
+    type Plugin,
+    type ViteDevServer,
+    type UserConfig,
+    createLogger,
+    isRunnableDevEnvironment
+} from "vite"
 import { isBuildTimeFile, serializeModules } from "./util"
 import type { ModuleRunner } from "vite/module-runner"
 
@@ -49,10 +56,14 @@ export function UseBuildPlugin(): Plugin {
                 logger.info("\n")
                 logger.info(`Running build time script: ${id}`, { timestamp: true })
 
-                const ssrEnv = buildServer.environments.ssr
-                const runner = (ssrEnv as any)["runner"] as ModuleRunner
-
                 try {
+                    const ssrEnv = buildServer.environments.ssr
+                    if (!isRunnableDevEnvironment(ssrEnv)) {
+                        throw new Error("SSR environment is not runnable")
+                    }
+
+                    const runner = ssrEnv.runner
+
                     const modules = await runner.import(id)
                     logger.info(`Done in ${Date.now() - start}ms`, { timestamp: true })
 
@@ -78,3 +89,5 @@ export function UseBuildPlugin(): Plugin {
         }
     }
 }
+
+export { UseBuildPlugin as useBuild }
