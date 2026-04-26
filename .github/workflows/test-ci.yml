@@ -36,5 +36,5 @@ jobs:
         run: pnpm e2e
 
       - name: Test rsbuild
-        working-directory: test/basic-react
+        working-directory: e2e/basic-react
         run: pnpm build
