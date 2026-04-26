@@ -25,9 +25,11 @@ function App() {
                 <p>
                     Edit <code>src/App.tsx</code> and save to test HMR
                 </p>
-                <p>uuid: {uuid}</p>
-                <p>postId: {postId}</p>
-                <p>userId: {userId}</p>
+                <div data-testid="build-values">
+                    <p data-testid="build-uuid">uuid: {uuid}</p>
+                    <p data-testid="build-post-id">postId: {postId}</p>
+                    <p data-testid="build-user-id">userId: {userId}</p>
+                </div>
             </div>
             <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
         </>

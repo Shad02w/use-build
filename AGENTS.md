@@ -10,12 +10,13 @@ It documents how to build, lint, test, and how to follow local code style.
 - Their exported values are serialized into runtime-safe static exports.
 - Main package: `core/` (published as `use-build`).
 - Test fixtures: `test/basic-react`, `test/vite-6-react`, `test/vite-7-react`.
+- E2E apps (Playwright + Vite): `e2e/vite-6-react`, `e2e/vite-7-react`, `e2e/vite-8-react`.
 
 ## Workspace Layout
 
-- Root workspace: `/` (`pnpm-workspace.yaml` includes `core` and `test/*`).
+- Root workspace: `/` (`pnpm-workspace.yaml` includes `core`, `test/*`, and `e2e/*`).
 - Publishable package: `core/`.
-- Fixture apps used as integration tests: `test/*`.
+- Fixture apps used as integration tests: `test/*` and `e2e/*`.
 - Release/test automation: `.github/workflows/*.yml`.
 - Helper scripts for publish flow: `scripts/prepublish-core.mjs`, `scripts/cleanup-core.mjs`.
 
@@ -49,24 +50,25 @@ It documents how to build, lint, test, and how to follow local code style.
     - Equivalent from root: `pnpm -C core build`
 - Watch build while developing core:
     - `pnpm -C core dev`
-- Build all integration fixtures through core test script:
-    - `pnpm --filter use-build test`
 
 ## Test Commands
 
 Important: there is no unit test runner configured (no Vitest/Jest here).
-"Tests" are integration fixture builds.
+"Tests" are Playwright E2E runs and targeted fixture builds.
 
 - Run all integration tests:
-    - `pnpm --filter use-build test`
+    - `pnpm e2e`
 - Run a single fixture test (recommended pattern):
     - `pnpm -C test/basic-react build`
     - `pnpm -C test/vite-6-react build`
     - `pnpm -C test/vite-7-react build`
+- Run Playwright E2E (starts Vite dev/preview servers for `e2e/vite-*` fixtures):
+    - First time only (browser download): `pnpm exec playwright install chromium`
+    - `pnpm e2e`
 - CI currently runs:
     - core build
     - `test/basic-react` build
-    - `test/vite-6-react` build
+    - `pnpm e2e` (after `pnpm exec playwright install chromium --with-deps`)
 
 ## Lint / Format / Typecheck Commands
 
@@ -164,7 +166,7 @@ From `.prettierrc`:
 - Install: `pnpm install --frozen-lockfile`
 - Build core: `pnpm -C core build`
 - Watch core: `pnpm -C core dev`
-- Test all fixtures: `pnpm --filter use-build test`
+- Test all fixtures: `pnpm e2e`
 - Test single fixture: `pnpm -C test/vite-6-react build`
 - Lint fixture: `pnpm -C test/vite-6-react lint`
 - Format write: `pnpm prettier -w .`

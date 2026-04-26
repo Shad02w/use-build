@@ -32,7 +32,6 @@
     "scripts": {
         "dev": "rslib build --watch",
         "build": "rslib build",
-        "test": "cd ../e2e/basic-react && pnpm build && cd ../vite-6-react && pnpm build && cd ../vite-7-react && pnpm build && cd ../vite-8-react && pnpm build",
         "prepublishOnly": "pnpm run build && node ../scripts/prepublish-core.mjs",
         "postpublish": "node ../scripts/cleanup-core.mjs"
     },

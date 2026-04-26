@@ -26,13 +26,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+
       - name: Build plugin
         run: pnpm --filter='use-build' build
 
+      - name: E2E (Playwright)
+        run: pnpm e2e
+
       - name: Test rsbuild
         working-directory: test/basic-react
-        run: pnpm build
-
-      - name: Test vite
-        working-directory: test/vite-6-react
         run: pnpm build

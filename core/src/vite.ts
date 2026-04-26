@@ -7,7 +7,6 @@ import {
     isRunnableDevEnvironment
 } from "vite"
 import { isBuildTimeFile, serializeModules } from "./util"
-import type { ModuleRunner } from "vite/module-runner"
 
 const name = "use-build"
 
@@ -15,6 +14,25 @@ export function UseBuildPlugin(): Plugin {
     const logger = createLogger("info", { prefix: `[${name}]` })
     let userConfig: UserConfig
     let buildServer: ViteDevServer
+    let importQueue: Promise<void> = Promise.resolve()
+
+    /*
+     * Vite can transform related "use build" modules concurrently:
+     *
+     *   time 1: transform(A) -> runner.import(A) -> imports shared dependency B
+     *   time 2: transform(B) -> runner.import(B) starts before time 1 has finished
+     *
+     * If both runner imports overlap, B may be evaluated through both paths before the runner
+     * cache settles. Queue top-level runner imports so one build-time graph finishes first.
+     */
+    const runBuildTimeImport = async <T>(loader: () => Promise<T>): Promise<T> => {
+        const result = importQueue.then(loader, loader)
+        importQueue = result.then(
+            () => undefined,
+            () => undefined
+        )
+        return result
+    }
 
     return {
         name: `vite:${name}`,
@@ -26,6 +44,7 @@ export function UseBuildPlugin(): Plugin {
             }
         },
         async buildStart() {
+            importQueue = Promise.resolve()
             buildServer = await createViteServer({
                 ...userConfig,
                 // prevent resolve config file automatically to avoid infinite loop
@@ -64,7 +83,7 @@ export function UseBuildPlugin(): Plugin {
 
                     const runner = ssrEnv.runner
 
-                    const modules = await runner.import(id)
+                    const modules = await runBuildTimeImport(() => runner.import(id))
                     logger.info(`Done in ${Date.now() - start}ms`, { timestamp: true })
 
                     const currentModule = buildServer.moduleGraph.getModuleById(id)

@@ -27,10 +27,10 @@ function App() {
                 <button className="counter" onClick={() => setCount(count => count + 1)}>
                     Count is {count}
                 </button>
-                <div className="build-ids">
-                    <p>uuid: {uuid}</p>
-                    <p>postId: {postId}</p>
-                    <p>userId: {userId}</p>
+                <div className="build-ids" data-testid="build-values">
+                    <p data-testid="build-uuid">uuid: {uuid}</p>
+                    <p data-testid="build-post-id">postId: {postId}</p>
+                    <p data-testid="build-user-id">userId: {userId}</p>
                 </div>
             </section>
 
